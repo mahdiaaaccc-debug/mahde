@@ -1,0 +1,131 @@
+/* إعدادات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f1f3f4;  /* خلفية فاتحة رسمية */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* الهيدر */
+header {
+    background-color: #003366;  /* لون أزرق داكن */
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+header .logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+/* الفوتر */
+footer {
+    background-color: #003366;  /* لون أزرق داكن */
+    padding: 10px;
+    text-align: center;
+    color: white;
+}
+
+/* الأزرار */
+.btn {
+    padding: 12px 20px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #007BFF;  /* الأزرق الرسمي */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;  /* أخضر مميز */
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-warning {
+    background-color: #ffc107;  /* أصفر دافئ */
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-info {
+    background-color: #17a2b8;  /* لون أزرق هادئ */
+}
+
+.btn-info:hover {
+    background-color: #138496;
+}
+
+/* التنسيق الداخلي */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* أقسام الصفحة */
+.dashboard {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1, h2 {
+    color: #003366;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* تنسيق الأزرار في اللوحة */
+.buttons .btn {
+    margin: 15px 0;
+}
+
+/* تنسيق خيارات لوحة التحكم */
+.dashboard .btn-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.dashboard .btn-group a {
+    margin: 10px;
+}
+
+/* إضافة بعض التأثيرات */
+.dashboard a:hover {
+    opacity: 0.8;
+}
+
+/* تحسين التنسيق للمحتوى داخل اللوحة */
+.dashboard h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
