@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة منتج جديد</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <img src="img/logo.png" alt="شعار النظام" class="logo">
+            <h1>إضافة منتج جديد</h1>
+        </div>
+    </header>
+
+    <main>
+        <section class="add-product">
+            <h2>نموذج إضافة منتج</h2>
+            <form id="product-form">
+                <label for="product-name">اسم المنتج</label>
+                <input type="text" id="product-name" required>
+
+                <label for="product-price">السعر</label>
+                <input type="number" id="product-price" required>
+
+                <label for="product-description">الوصف</label>
+                <textarea id="product-description" required></textarea>
+
+                <label for="product-barcode">الباركود</label>
+                <input type="text" id="product-barcode" required readonly>
+
+                <div id="barcode-scanner">
+                    <button type="button" class="btn btn-secondary" onclick="startScanner()">ابدأ مسح الباركود</button>
+                    <div id="scanner-container" style="width: 100%; height: 300px; margin-top: 20px;"></div>
+                </div>
+
+                <div class="barcode-container">
+                    <svg id="barcode"></svg>
+                </div>
+
+                <label for="product-image">صورة المنتج</label>
+                <input type="file" id="product-image" accept="image/*" onchange="previewImage(event)" required>
+
+                <label for="product-image-thumbnail">الصورة المصغرة</label>
+                <div class="thumbnail-container">
+                    <img id="thumbnail" src="#" alt="الصورة المصغرة" class="thumbnail" onclick="showFullImage()">
+                </div>
+
+                <button type="submit" class="btn btn-primary">إضافة المنتج</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 نظام إدارة المنتجات</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner-container'),
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function(result) {
+                const barcode = result.codeResult.code;
+                document.getElementById("product-barcode").value = barcode;
+                JsBarcode("#barcode", barcode, {
+                    format: "EAN13",
+                    displayValue: true
+                });
+                Quagga.stop();
+            });
+        }
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('thumbnail');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function showFullImage() {
+            var imageSrc = document.getElementById('thumbnail').src;
+            if(imageSrc) {
+                var fullImageWindow = window.open("", "_blank");
+                fullImageWindow.document.write("<img src='" + imageSrc + "' width='100%'>");
+            }
+        }
+    </script>
+</body>
+</html>

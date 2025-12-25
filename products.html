@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض المنتجات</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <img src="img/logo.png" alt="شعار النظام" class="logo">
+            <h1>عرض المنتجات</h1>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-product">
+            <h2>بحث عن منتج</h2>
+            <label for="search-input">البحث عن المنتج (اسم، رقم الباركود، رقم الايتم):</label>
+            <input type="text" id="search-input" placeholder="أدخل رقم الباركود أو الاسم أو رقم الايتم" oninput="searchProduct()">
+
+            <div id="barcode-scanner">
+                <button type="button" class="btn btn-secondary" onclick="startScanner()">ابدأ مسح الباركود</button>
+                <div id="scanner-container" style="width: 100%; height: 300px; margin-top: 20px;"></div>
+            </div>
+        </section>
+
+        <section class="product-list">
+            <h2>المنتجات المتاحة</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>رقم الايتم</th>
+                        <th>الباركود</th>
+                        <th>العدد</th>
+                        <th>السعر</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table">
+                    <tr data-item="1" data-name="منتج 1" data-barcode="1234567890123" data-description="وصف المنتج 1">
+                        <td>منتج 1</td>
+                        <td>1</td>
+                        <td>1234567890123</td>
+                        <td>10</td>
+                        <td>1000 IQD</td>
+                        <td>وصف المنتج 1</td>
+                    </tr>
+                    <tr data-item="2" data-name="منتج 2" data-barcode="2345678901234" data-description="وصف المنتج 2">
+                        <td>منتج 2</td>
+                        <td>2</td>
+                        <td>2345678901234</td>
+                        <td>5</td>
+                        <td>1500 IQD</td>
+                        <td>وصف المنتج 2</td>
+                    </tr>
+                    <tr data-item="3" data-name="منتج 3" data-barcode="3456789012345" data-description="وصف المنتج 3">
+                        <td>منتج 3</td>
+                        <td>3</td>
+                        <td>3456789012345</td>
+                        <td>20</td>
+                        <td>2000 IQD</td>
+                        <td>وصف المنتج 3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 نظام إدارة المنتجات</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // قائمة المنتجات
+        const products = [
+            { name: 'منتج 1', itemNumber: 1, barcode: '1234567890123', quantity: 10, price: '1000 IQD', description: 'وصف المنتج 1' },
+            { name: 'منتج 2', itemNumber: 2, barcode: '2345678901234', quantity: 5, price: '1500 IQD', description: 'وصف المنتج 2' },
+            { name: 'منتج 3', itemNumber: 3, barcode: '3456789012345', quantity: 20, price: '2000 IQD', description: 'وصف المنتج 3' }
+        ];
+
+        // البحث عن المنتجات
+        function searchProduct() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const filteredProducts = products.filter(product => {
+                return product.name.toLowerCase().includes(searchInput) ||
+                       product.barcode.includes(searchInput) ||
+                       product.itemNumber.toString().includes(searchInput);
+            });
+
+            displayProducts(filteredProducts);
+        }
+
+        // عرض المنتجات في الجدول
+        function displayProducts(filteredProducts) {
+            const productTable = document.getElementById('product-table');
+            productTable.innerHTML = '';  // مسح الجدول الحالي
+
+            filteredProducts.forEach(product => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-item', product.itemNumber);
+                row.setAttribute('data-name', product.name);
+                row.setAttribute('data-barcode', product.barcode);
+                row.setAttribute('data-description', product.description);
+
+                row.innerHTML = ` 
+                    <td>${product.name}</td>
+                    <td>${product.itemNumber}</td>
+                    <td>${product.barcode}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                `;
+                productTable.appendChild(row);
+            });
+        }
+
+        // بدء ماسح الباركود
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner-container'),
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function(result) {
+                const barcode = result.codeResult.code;
+                document.getElementById("search-input").value = barcode;
+                searchProduct();  // البحث بعد مسح الباركود
+                Quagga.stop();
+            });
+        }
+
+        // عرض المنتجات عند تحميل الصفحة
+        displayProducts(products);
+    </script>
+</body>
+</html>
